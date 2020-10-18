@@ -1,5 +1,4 @@
-
-version: '2.1'
+version: '3.8'
 
 services:
   localstack:
@@ -7,16 +6,19 @@ services:
     ports:
       - "4566-4599:4566-4599"
     environment:
-      - SERVICES=s3
-      - DEBUG=1
+      SERVICES: s3
+      DEBUG: "1"
     volumes:
-      - ./awslocal:/docker-entrypoint-initaws.d
+      - ./awslocal:/docker-entrypoint-initaws.d:ro
+
   caddy:
-    image: caddy
+    build: .
     volumes:
-      - ./Caddyfile:/Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
     ports:
       - "80:80"
-    links:
-      - localstack
-    command: caddy  run --config /Caddyfile
+    environment:
+      AWS_ACCESS_KEY_ID: dummy
+      AWS_SECRET_ACCESS_KEY: dummy
+      ENDPOINT: http://localstack:4566/
+    command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch"]

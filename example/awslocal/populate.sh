@@ -8,6 +8,7 @@ cat << EOF >  index.html
 <p>This is a silly sample site served by caddy and s3proxy.</p>
 EOF
 awslocal s3 cp index.html s3://my-bucket/index.html
+echo "this is a 404 page" | awslocal s3 cp - s3://my-bucket/404.html
 
 awslocal s3 mb s3://test-results
 echo "test reports" | awslocal s3 cp - s3://test-results/index.html
@@ -22,4 +23,3 @@ echo "DOG" | awslocal s3 cp - s3://bkt/a/long/path/we/have/for/animals/dog.txt
 echo "COW" | awslocal s3 cp - s3://bkt/a/long/path/we/have/for/animals/cow.txt
 echo "BAT" | awslocal s3 cp - s3://bkt/a/long/path/we/have/for/animals/bat.txt
 set +x
-
